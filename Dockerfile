@@ -1,11 +1,11 @@
-# Usa l'immagine ufficiale di Python 3.12.8
-FROM python:3.12.8
+# Usa l'immagine ufficiale di Python 3.12.9 con slim
+FROM python:3.12.9-slim-bookworm
 
-# Installa FFmpeg
-RUN apt-get update && apt-get install -y ffmpeg
-
-# Installa le librerie per Mutagen (per manipolare file audio, come MP3)
-RUN apt-get install -y libmagic1
+# Installa FFmpeg e aggiorna i pacchetti di sistema
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ffmpeg libmagic1 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Imposta la cartella di lavoro nel container
 WORKDIR /app
@@ -23,4 +23,4 @@ ENV XDG_CACHE_HOME=/app/yt-cache
 COPY .env .env
 
 # Comando per avviare il programma
-CMD ["python", "MultiThreadsSpotify.py"]
+CMD ["python", "-m", "src.main"]

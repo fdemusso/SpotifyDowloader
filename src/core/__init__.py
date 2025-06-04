@@ -1,0 +1,3 @@
+"""
+Modulo core dell'applicazione
+""" 

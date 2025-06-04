@@ -1,80 +1,114 @@
-This program enables you to download entire Spotify playlists, album or song as MP3 files quickly and efficiently.  
+# SpotifyDl
 
-## Features  
-- **Multi-threaded Downloads**: Download multiple songs simultaneously by configuring the number of threads, speeding up the process for large playlists.  
-- **Customizable Coded**: Customizable music quality.  
-- **Metadata Support**: Each MP3 file is saved with proper metadata (title, artist, album, etc.) for better organization.  
-- **Playlist Update**: If you need to add some tracks from a playlist, just re-enter the link and folder, and the program will download only the new ones.
+Un'applicazione Python per scaricare playlist, album e brani da Spotify come file MP3.
 
-## Requirements  
-- Spotify API credentials (Client ID and Client Secret).
+## Caratteristiche
+
+- **Download Multi-thread**: Scarica più brani contemporaneamente configurando il numero di thread
+- **Qualità Personalizzabile**: Configura la qualità audio desiderata
+- **Supporto Metadati**: Ogni file MP3 viene salvato con i metadati corretti (titolo, artista, album, ecc.)
+- **Aggiornamento Playlist**: Scarica automaticamente solo i nuovi brani aggiunti alle playlist
+
+## Requisiti
+
+- Credenziali API Spotify (Client ID e Client Secret)
   [spotify.com](https://developer.spotify.com/)
-- Internet connection.  
-- Required dependencies (detailed in the setup instructions below).  
-- Python 
-  [python.org](https://www.python.org/)
+- Connessione Internet
+- Python 3.8 o superiore
+- FFmpeg
 
-## Dependencies  
+## Installazione
 
-The following Python libraries are required to run this program:  
-- `spotipy`   
-- `yt-dlp`
-- `mutagen`
-- `ffmpeg-python`
-- `python-dotenv`
-- `colorama`
+1. Clona il repository:
+```bash
+git clone https://github.com/tuousername/SpotifyDl.git
+cd SpotifyDl
+```
 
-## Installing Dependencies  
- 
-Run the following command to install the required libraries:  
+2. Installa le dipendenze:
 ```bash
 pip install -r requirements.txt
 ```
-## Additional Tool  
- 
-**FFmpeg**: Required for processing and converting audio files:  
-**On macOs** (using Homebrew)
+
+3. Installa FFmpeg:
+
+**Windows**:
+- Scarica FFmpeg da https://ffmpeg.org/download.html
+- Aggiungi FFmpeg al PATH di sistema
+
+**macOS**:
 ```bash
 brew install ffmpeg
 ```
-**On Linux** (Debian/Ubuntu):
+
+**Linux**:
 ```bash
 sudo apt update
 sudo apt install ffmpeg
 ```
-**On Windows**:
-- Download the FFmpeg executable from the official site: https://ffmpeg.org/download.html.
-- Add FFmpeg to your system's PATH environment variable (refer to the official guide for 
-  instructions).
-  
-## Installation  
- 
-1. Clone this repository.
-2. Run the program and enjoy your MP3 downloads!
-  -You can simply open it in Visual Studio and run it in a dedicated terminal.
-  -You can create a `spotifydl.bat` file like this:
-  
-  ```bat
-  @echo off
-  cd /d "C:\Scripts\SpotifyDowloader"
-  setlocal
-  if exist .env (
-    for /f "usebackq delims=" %%a in (".env") do set %%a
-  )
-  python "MultiThreadsSpotify.py"
-  endlocal
 
-  ```
-  Remember, this is an example; your path may be different; then you need to add the path you set to the system's PATH environment variable, and you will be able to simply type `spotifydl` in the terminal to start the program.
+4. Esegui l'applicazione:
+```bash
+python -m src.main
+```
 
-  ## Usage
-  Once the Python script is installed correctly, simply run it. For help, you can type `help`. The available commands are as follows and perform the corresponding actions:
+## Configurazione
 
-- **"download"**: Download any item from Spotify.
-- **"update <playlist number>"**: Update a specific playlist using the number obtained from `list`. If you don't enter a number, all playlists will be updated automatically with the latest changes.
-- **"list"**: Show a list of the downloaded playlists.
-- **"addMeta"**: Add the metadata of a Spotify song to a specific file.
-- **"settings"**: Edit the .env settings from the app.
-- **"exit"**: Closes the program.
+Al primo avvio, l'applicazione ti chiederà di inserire:
+- SPOTIFY_CLIENT_ID
+- SPOTIFY_CLIENT_SECRET
+- MAX_THREADS (numero di download simultanei)
+- PREFERRED_QUALITY (qualità audio preferita)
 
-It takes some time for the program to find one or more songs (depending on your connection, whether the song is difficult to find, has restrictions, or is not very popular). Therefore, even if you see warnings related to the cache or other information, always wait for a final output, either an error or a success message.
+## Utilizzo
+
+L'applicazione supporta i seguenti comandi:
+
+- `download`: Scarica una playlist, album o brano da Spotify
+- `update <numero>`: Aggiorna una playlist specifica o tutte le playlist
+- `list`: Mostra la lista delle playlist scaricate
+- `addmeta`: Aggiunge i metadati di un brano Spotify a un file audio
+- `settings`: Modifica le impostazioni dell'applicazione
+- `help`: Mostra la lista dei comandi disponibili
+- `exit`: Chiude l'applicazione
+
+## Docker
+
+Per eseguire l'applicazione con Docker:
+
+1. Costruisci l'immagine:
+```bash
+docker build -t spotifydl .
+```
+
+2. Esegui il container:
+```bash
+docker run -it spotifydl
+```
+
+## Struttura del Progetto
+
+```
+SpotifyDl/
+├── src/
+│   ├── core/
+│   │   ├── spotify.py
+│   │   ├── downloader.py
+│   │   └── metadata.py
+│   ├── utils/
+│   │   ├── config.py
+│   │   └── logger.py
+│   ├── commands/
+│   │   └── commands.py
+│   └── main.py
+├── requirements.txt
+├── Dockerfile
+└── README.md
+```
+
+## Note
+
+- L'applicazione utilizza YouTube per il download dei brani
+- I file vengono salvati in formato MP3
+- I metadati vengono estratti direttamente da Spotify
+- La cache di YouTube viene salvata nella cartella `yt-cache`
