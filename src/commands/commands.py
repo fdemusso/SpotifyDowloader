@@ -1,9 +1,13 @@
 import os
 import shutil
+from colorama import Fore, Style, init
 from src.utils.config import CONFIG_FOLDER, create_env_file
 from src.utils.logger import has_content
 from src.core.spotify import get_spotify_client, get_spotify_playlist_tracks, get_spotify_album_tracks, get_spotify_single_track
 from src.core.metadata import get_file_metadata
+
+# Inizializza colorama
+init()
 
 DATA_FILE = os.path.join(CONFIG_FOLDER, "data.dat")
 
@@ -17,12 +21,12 @@ def clear_terminal():
 def check_ffmpeg():
     """Controlla se FFmpeg è installato correttamente nel sistema."""
     if shutil.which("ffmpeg") is None:
-        print("FFmpeg is not installed or not in the PATH.")
-        print("Download it from: https://ffmpeg.org/download.html and install it.")
-        input("\nPress Enter to exit...")
+        print(Fore.RED + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "FFmpeg is not installed or not in the PATH.")
+        print(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "Download it from: https://ffmpeg.org/download.html and install it.")
+        input(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "\nPress Enter to exit...")
         return False
     else:
-        print("FFmpeg is installed in the PATH.")
+        print(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "FFmpeg is installed in the PATH.")
         clear_terminal()
         return True
 
@@ -58,13 +62,13 @@ def clean_entries(client_id, client_secret):
             playlist_id = url.split("playlist/")[1].split('?')[0]
         
         if not playlist_id:
-            print(f"The link is no longer valid for the path: {folder}")
+            print(Fore.RED + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"The link is no longer valid for the path: {folder}")
             continue
         
         try:
             sp.playlist(playlist_id)
         except Exception:
-            print(f"The link is no longer valid for the directory: {folder}")
+            print(Fore.RED + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"The link is no longer valid for the directory: {folder}")
             continue
         
         valid_entries.append((url, folder))
@@ -100,24 +104,24 @@ def check_playlist_files(playlist_url, folder, client_id, client_secret):
                 if match:
                     found_tracks_lower.add(track_title_lower)
                 else:
-                    choice = input(f"The song '{file}' is not in the playlist. Do you want to delete it? (y/n): ").strip().lower()
+                    choice = input(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"The song '{file}' is not in the playlist. Do you want to delete it? (y/n): ").strip().lower()
                     if choice == "y":
                         os.remove(file_path)
-                        print(f"Song '{file}' deleted.")
+                        print(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"Song '{file}' deleted.")
                         clear_terminal()
             else:
-                print(f"The file '{file}' does not have a title metadata. I recommend adding it.")
+                print(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"The file '{file}' does not have a title metadata. I recommend adding it.")
 
     missing_tracks = [track['name'] for track in playlist_tracks_dict if track['name'].lower() not in found_tracks_lower]
 
     if missing_tracks:
-        print("These songs are missing from the folder:")
+        print(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "These songs are missing from the folder:")
         for track in missing_tracks:
-            print(f"   - {track['name']} by {track['artists']}")
+            print(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"   - {track['name']} by {track['artists']}")
 
 def settings():
     """Gestisce le impostazioni dell'applicazione."""
-    sure = input("Are you sure you want to modify the settings? You will have to overwrite them all at once, including the Spotify ID and Secret.(y/n): ").lower()
+    sure = input(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "Are you sure you want to modify the settings? You will have to overwrite them all at once, including the Spotify ID and Secret.(y/n): ").lower()
     if sure == 'y':
         create_env_file()
     else:
@@ -136,7 +140,7 @@ def get_list(client_id, client_secret):
                     if parts:
                         links.append(parts[0])
         except FileNotFoundError:
-            print("File Not Found.")
+            print(Fore.RED + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "File Not Found.")
             return
 
         ID = 1
@@ -148,11 +152,11 @@ def get_list(client_id, client_secret):
 
             playlist_info = sp.playlist(playlist_id)
             playlist_name = playlist_info['name']
-            print(f"{ID}: {playlist_name}")
+            print(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"{ID}: {playlist_name}")
             ID += 1
     elif result == 3:
-        print("The playlist database is corrupted.")
+        print(Fore.RED + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "The playlist database is corrupted.")
     elif result == 0:
-        print("No playlist has been downloaded yet.")
+        print(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "No playlist has been downloaded yet.")
     else:
-        print("Unexpected error.") 
+        print(Fore.RED + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "Unexpected error.") 

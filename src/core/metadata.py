@@ -6,6 +6,10 @@ from pathlib import Path
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 from src.utils.logger import log_error
+from colorama import Fore, Style, init
+
+# Inizializza colorama
+init()
 
 file_lock = threading.Lock()
 
@@ -54,12 +58,12 @@ def rename_file(temp_file, track_info, output_folder):
             break
         except OSError as e:
             if hasattr(e, "winerror") and e.winerror == 32:
-                print(f"File in use, retrying rename for {final_file} (attempt {attempt+1}/{max_retries})")
+                print(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"File in use, retrying rename for {final_file} (attempt {attempt+1}/{max_retries})")
                 time.sleep(0.5)
             else:
                 raise e
     else:
-        print(f"Failed to rename {temp_file} after {max_retries} attempts.")
+        print(Fore.RED + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"Failed to rename {temp_file} after {max_retries} attempts.")
         return None
 
     try:
@@ -84,26 +88,35 @@ def rename_file(temp_file, track_info, output_folder):
 
     return final_file
 
-def get_file_metadata(mp3_file):
-    """Legge il titolo e l'artista dal metadato ID3 del file MP3."""
+def get_file_metadata(file_path):
+    """Ottiene i metadati di un file audio."""
     try:
-        audio = MP3(mp3_file, ID3=EasyID3)
-        title = audio.get("title", [None])[0]
-        artist = audio.get("artist", [None])[0]
+        audio = MP3(file_path, ID3=EasyID3)
+        title = audio.get('title', [''])[0]
+        artist = audio.get('artist', [''])[0]
         return title, artist
     except Exception:
         return None, None
 
 def track_already_downloaded(track, output_folder):
-    """Controlla se un brano è già presente nella cartella."""
-    for file in Path(output_folder).glob("*.mp3"):
-        try:
-            audio = MP3(str(file), ID3=EasyID3)
-            title = audio.get('title', [None])[0]
-            artist = audio.get('artist', [None])[0]
-            if title and artist:
-                if title.strip().lower() == track['name'].strip().lower() and artist.strip().lower() == track['artists'].strip().lower():
-                    return True
-        except Exception:
-            continue
+    """Controlla se il brano è già stato scaricato."""
+    final_name = re.sub(r'[\/:*?."<>|]', " ", track['name']).strip().rstrip('.')
+    final_output_path = Path(output_folder) / final_name
+    final_file = str(final_output_path) + ".mp3"
+
+    if os.path.exists(final_file):
+        return True
+
+    alt_final_name = f"{final_name} - {track['artists']}"
+    alt_final_name = re.sub(r'[\/:*?."<>|]', " ", alt_final_name).strip().rstrip('.')
+    alt_final_output_path = Path(output_folder) / alt_final_name
+    alt_final_file = str(alt_final_output_path) + ".mp3"
+
+    if os.path.exists(alt_final_file):
+        return True
+
+    i = 1
+    while os.path.exists(f"{final_output_path}-{i}.mp3"):
+        i += 1
+
     return False 
