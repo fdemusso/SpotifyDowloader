@@ -1,6 +1,5 @@
-python-dotenv
-spotipy
-yt-dlp
-ffmpeg-python
-mutagen
-colorama
+spotipy>=2.23.0
+yt-dlp>=2023.11.16
+python-dotenv>=1.0.0
+mutagen>=1.47.0
+colorama>=0.4.6
