@@ -21,7 +21,7 @@ Un'applicazione Python per scaricare playlist, album e brani da Spotify come fil
 
 1. Clona il repository:
 ```bash
-git clone https://github.com/tuousername/SpotifyDl.git
+git clone https://github.com/fdemusso/SpotifyDowloader.git
 cd SpotifyDl
 ```
 
