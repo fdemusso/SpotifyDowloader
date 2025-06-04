@@ -9,7 +9,7 @@ from src.core.downloader import download_track
 from src.core.metadata import add_metadata_to_file, rename_file, track_already_downloaded
 from src.commands.commands import (
     clear_terminal, check_ffmpeg, save_entry, check_playlist_files,
-    settings, get_list, clean_entries
+    settings, get_list, clean_entries, DATA_FILE
 )
 
 # Inizializza colorama

@@ -112,7 +112,7 @@ def check_playlist_files(playlist_url, folder, client_id, client_secret):
             else:
                 print(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"The file '{file}' does not have a title metadata. I recommend adding it.")
 
-    missing_tracks = [track['name'] for track in playlist_tracks_dict if track['name'].lower() not in found_tracks_lower]
+    missing_tracks = [track for track in playlist_tracks_dict if track['name'].lower() not in found_tracks_lower]
 
     if missing_tracks:
         print(Fore.YELLOW + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "These songs are missing from the folder:")

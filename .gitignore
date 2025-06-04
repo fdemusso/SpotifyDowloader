@@ -4,6 +4,7 @@ data.dat
 
 # Cache e file temporanei
 .cache/
+.cache
 yt-cache/
 __pycache__/
 *.py[cod]
