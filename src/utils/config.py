@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from colorama import Fore, Style, init
+
+# Inizializza colorama
+init()
 
 # Variabili globali riguardanti la cartella dell'applicazione
 APP_NAME = "SpotifyDl"
@@ -11,14 +15,14 @@ ENV_PATH = os.path.join(CONFIG_FOLDER, DEFAULT_ENV_NAME)
 def ensure_config_directory():
     if not os.path.exists(CONFIG_FOLDER):
         os.makedirs(CONFIG_FOLDER)
-        print(f"[SpotifyDl] Configuration folder created: {CONFIG_FOLDER}")
+        print(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"Configuration folder created: {CONFIG_FOLDER}")
 
 def create_env_file():
-    print("[SpotifyDl] .env file not found. Creating a new one.")
-    spotify_client_id = input("[SpotifyDl] Enter SPOTIFY_CLIENT_ID: ").strip()
-    spotify_client_secret = input("[SpotifyDl] Enter SPOTIFY_CLIENT_SECRET: ").strip()
-    max_threads = input("[SpotifyDl] Enter MAX_THREADS: ").strip()
-    preferred_quality = input("[SpotifyDl] Enter PREFERRED_QUALITY: ").strip()
+    print(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + ".env file not found. Creating a new one.")
+    spotify_client_id = input(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "Enter SPOTIFY_CLIENT_ID: ").strip()
+    spotify_client_secret = input(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "Enter SPOTIFY_CLIENT_SECRET: ").strip()
+    max_threads = input(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "Enter MAX_THREADS: ").strip()
+    preferred_quality = input(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + "Enter PREFERRED_QUALITY: ").strip()
     cache_yt = os.path.join(CONFIG_FOLDER, "yt-cache")
 
     env_content = f"""
@@ -31,12 +35,12 @@ XDG_CACHE_HOME={cache_yt}
     
     with open(ENV_PATH, "w") as f:
         f.write(env_content.strip())
-    print(f"[SpotifyDl] .env file created at {ENV_PATH}")
+    print(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f".env file created at {ENV_PATH}")
 
 def load_config():
     ensure_config_directory()
     if os.path.exists(ENV_PATH):
-        print(f"File .env trovato in {ENV_PATH}. Loading...")
+        print(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"File .env trovato in {ENV_PATH}. Loading...")
     else:
         create_env_file()
     
