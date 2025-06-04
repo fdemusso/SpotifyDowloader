@@ -36,7 +36,7 @@ def download_track(track, output_folder, in_processing, track_already_downloaded
         return None
 
     in_processing.add(key)
-    query = f"{track['name']} \"{track['artists']}\""
+    query = f"intitle:{track['name']} \"{track['artists']}\""
     print(Fore.GREEN + Style.BRIGHT + "[SpotifyDl] " + Style.RESET_ALL + f"Searching: {query}")
     youtube_url = search_youtube(query, output_folder)
     if not youtube_url:
